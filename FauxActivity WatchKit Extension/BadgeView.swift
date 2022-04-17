@@ -38,10 +38,30 @@ struct BadgeView: _UIViewRepresentable {
         let badgeView = Dynamic.AAUIBadgeView.initUsingEarnedShader(true)
         badgeView.setConfiguration(configuration)
 
-        // Lastly, we utilize the existing UIView to present our badge view.
+        // We utilize the existing UIView to present our badge view.
         // We remove all other layers from the view and tack it right on.
         object.addSubview(badgeView)
         object.bringSubviewToFront(badgeView)
-        badgeView.playFlipInAnimation()
+
+        // Lastly... a few touch-ups.
+        // Derived from [AAUIAchievementFormatter backsideAttributesWithSizeVariant:].
+        // Note that no matter whatever attributes are set, a font _must_ be set.
+        // FitnessUI's [NSMutableAttributedString(FIUISizing) scaleFontSizeByAmount:minimumFontSize:] will crash otherwise.
+        let badgeStyle = NSMutableParagraphStyle()
+        badgeStyle.alignment = .center
+        badgeStyle.lineHeightMultiple = 0.95
+
+        // This specific color appears to be desired.
+        let badgeColor = UIColor(white: 0.5, alpha: 0.5)
+
+        // TODO: Kerning is set - to what?
+        let badgeText = NSAttributedString(string: "EARNED BY SPOTLIGHT\nON DECEMBER 21, 2019", attributes: [
+            .font: UIFont.boldSystemFont(ofSize: 16.0),
+            .foregroundColor: badgeColor,
+            .paragraphStyle: badgeStyle,
+        ])
+
+        badgeView.setBadgeBacksideAttributedString(badgeText)
+        badgeView.setBadgeBacksideIcon(UIImage(systemName: "pawprint.fill"))
     }
 }
