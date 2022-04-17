@@ -1,6 +1,6 @@
 //
 //  FauxActivityApp.swift
-//  FauxActivity WatchKit Extension
+//  Shared
 //
 //  Created by Spotlight Deveaux on 2022-04-13.
 //
@@ -16,9 +16,7 @@ struct FauxActivityApp: App {
 
     var body: some Scene {
         WindowGroup {
-            NavigationView {
-                ContentView()
-            }
+            ContentView()
         }
     }
 }

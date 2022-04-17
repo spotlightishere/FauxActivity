@@ -1,6 +1,6 @@
 //
 //  ContentView.swift
-//  FauxActivity WatchKit Extension
+//  Shared
 //
 //  Created by Spotlight Deveaux on 2022-04-13.
 //

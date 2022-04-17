@@ -7,15 +7,23 @@
 
 import Dynamic
 import SwiftUI
-import WatchKit
 
+#if os(watchOS)
 /// Present to allow usage of UIView.
 /// A UIView is an NSObject somewhere down the line, at least...
 typealias UIView = NSObject
 
-/// Instantiates a UIView.
 /// Who knew that you could use UIViewRepresentable in watchOS with little fuss?
-struct BadgeView: _UIViewRepresentable {
+typealias NativeRepresentable = _UIViewRepresentable
+#else
+// We need actual UIKit.
+import UIKit
+
+typealias NativeRepresentable = UIViewRepresentable
+#endif
+
+/// Instantiates a UIView with our badge view.
+struct BadgeView: NativeRepresentable {
     typealias UIViewType = UIView
 
     /// Provider used to obtain badge texture assets.
