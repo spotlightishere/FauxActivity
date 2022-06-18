@@ -14,20 +14,21 @@ import SwiftUI
 typealias UIView = NSObject
 
 /// Who knew that you could use UIViewRepresentable in watchOS with little fuss?
-typealias NativeRepresentable = _UIViewRepresentable
+typealias UIViewRepresentable = _UIViewRepresentable
 #else
-// We need actual UIKit.
+// We can utilize UIKit natively elsewhere.
 import UIKit
-
-typealias NativeRepresentable = UIViewRepresentable
 #endif
 
 /// Instantiates a UIView with our badge view.
-struct BadgeView: NativeRepresentable {
+struct BadgeView: UIViewRepresentable {
     typealias UIViewType = UIView
 
     /// Provider used to obtain badge texture assets.
     let badgeProvider = BadgeProvider()
+    
+    /// The UIView within this view.
+    let badgeView = Dynamic.AAUIBadgeView.initUsingEarnedShader(true)
 
     func makeUIView(context _: Context) -> UIView {
         // We create a UIView via Dynamic to avoid messing with headers.
@@ -42,8 +43,7 @@ struct BadgeView: NativeRepresentable {
         // TODO: allow choosing custom badges
         let configuration = badgeProvider.badge(named: "3000MoveGoals")
 
-        // Create our badge view with the given configuration!
-        let badgeView = Dynamic.AAUIBadgeView.initUsingEarnedShader(true)
+        // Set our badge view to have the given configuration!
         badgeView.setConfiguration(configuration)
 
         // We utilize the existing UIView to present our badge view.
@@ -62,14 +62,18 @@ struct BadgeView: NativeRepresentable {
         // This specific color appears to be desired.
         let badgeColor = UIColor(white: 0.5, alpha: 0.5)
 
-        // TODO: Kerning is set - to what?
         let badgeText = NSAttributedString(string: "EARNED BY SPOTLIGHT\nON DECEMBER 21, 2019", attributes: [
             .font: UIFont.boldSystemFont(ofSize: 16.0),
             .foregroundColor: badgeColor,
             .paragraphStyle: badgeStyle,
+            .kern: 0.5,
         ])
 
+        badgeView.setShortenedBadgeBacksideStringProvider(badgeText)
         badgeView.setBadgeBacksideAttributedString(badgeText)
         badgeView.setBadgeBacksideIcon(UIImage(systemName: "pawprint.fill"))
+        
+        // Present!
+        badgeView.playFlipInAnimation()
     }
 }
